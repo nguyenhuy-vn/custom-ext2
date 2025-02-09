@@ -1,6 +1,18 @@
-# custom-ext2
-Modified ext2 filesystem to include additional functionalities:
+# 🛠 custom-ext2  
 
-- Implemented an external module to check the number of free blocks.  
-- Added a logging module to record file and folder events.  
-- Introduced an extended attribute (`creation_time`) to store file/directory creation timestamps.
+A modified ext2 filesystem with additional functionalities:  
+
+- 🟢 **Free Block Checker** – A module to check the number of free blocks.  
+- 📜 **Event Logging** – Logs file and folder events (creation, deletion, rename, move).  
+- 🕒 **Extended Attribute (`creation_time`)** – Stores file/directory creation timestamps.  
+
+---
+
+## 📦 Installation  
+
+### 1️⃣ Build and Install the Modules  
+Compile and load the modified ext2 kernel module:  
+
+```bash
+make
+sudo insmod ext2_modified.ko
