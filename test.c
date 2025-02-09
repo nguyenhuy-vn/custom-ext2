@@ -5,8 +5,8 @@
 #include <linux/printk.h>
 #include "ext2.h"
 
-// External function declaration
-unsigned long ext2_check_free_space1(struct super_block *sb){
+// External function declaration to check free space in ext2 filesystem
+unsigned long ext2_check_free_space1(struct super_block *sb) {
     struct ext2_sb_info *sbi = EXT2_SB(sb);
     struct ext2_super_block *es = sbi->s_es;
     unsigned long free_blocks;
@@ -16,14 +16,15 @@ unsigned long ext2_check_free_space1(struct super_block *sb){
     free_blocks = le32_to_cpu(es->s_free_blocks_count);
     reserved_blocks = le32_to_cpu(es->s_r_blocks_count);
 
+    // Ensure available_blocks does not go negative
     if (free_blocks > reserved_blocks) {
         available_blocks = free_blocks - reserved_blocks;
     } else {
         available_blocks = 0;
     }
 
-    // Trả về dung lượng trống tính bằng bytes
-    return available_blocks * sb->s_blocksize; 
+    // Return free space in bytes
+    return available_blocks * sb->s_blocksize;
 };
 
 static int test_init(void)
@@ -33,7 +34,7 @@ static int test_init(void)
 
     printk(KERN_ALERT "Test module loading...\n");
 
-    // Lấy thông tin filesystem type
+    // Retrieve filesystem type information
     fs_type = get_fs_type("ext2");
     if (!fs_type) {
         printk(KERN_ALERT "Error: ext2 filesystem not found\n");
@@ -41,14 +42,14 @@ static int test_init(void)
     }
     printk(KERN_ALERT "ext2 filesystem type found\n");
 
-    // Kiểm tra danh sách superblocks
+    // Check if there are any mounted ext2 filesystems
     if (hlist_empty(&fs_type->fs_supers)) {
         printk(KERN_ALERT "Error: No mounted ext2 filesystems\n");
         return -ENODEV;
     }
     printk(KERN_ALERT "Mounted ext2 filesystems found\n");
 
-    // Lấy superblock đầu tiên
+    // Retrieve the first available superblock
     sb = hlist_entry(fs_type->fs_supers.first, struct super_block, s_instances);
     if (!sb) {
         printk(KERN_ALERT "Error: Unable to retrieve superblock\n");
@@ -56,10 +57,10 @@ static int test_init(void)
     }
     printk(KERN_ALERT "Superblock retrieved successfully\n");
 
-    // Gọi hàm kiểm tra dung lượng trống
+    // Call the free space checking function
     printk(KERN_ALERT "Calling ext2_check_free_space...\n");
     unsigned long free_space = ext2_check_free_space1(sb);
-    printk(KERN_ALERT "Free space: %lu\n", free_space);
+    printk(KERN_ALERT "Free space: %lu bytes\n", free_space);
 
     return 0;
 }
