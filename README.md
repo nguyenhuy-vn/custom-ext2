@@ -14,5 +14,9 @@ A modified ext2 filesystem with additional functionalities:
 Compile and load the modified ext2 kernel module:  
 
 ```bash
-make
-sudo insmod ext2_modified.ko
+sudo make
+sudo insmod ext2.ko
+
+### 2️⃣ Build and Load Free Block Checker
+
+sudo 
