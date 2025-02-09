@@ -13,15 +13,15 @@ A modified ext2 filesystem with additional functionalities:
 ### 1️⃣ Build and Install the Modules  
 Compile and load the modified ext2 kernel module:  
 
-```bash
+'''
 sudo make
-
+'''
 Once compiled, load the modules into the kernel:
 
-```bash
+'''
 sudo insmod ext2.ko      # Load the modified ext2 filesystem module
 sudo insmod test.ko      # Load the free space checker module
-
+'''
 ### 2️⃣ Build and Load Free Block Checker
 
 sudo 
