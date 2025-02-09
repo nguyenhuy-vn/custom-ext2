@@ -169,27 +169,14 @@ static int ext2_create (struct mnt_idmap * idmap,
 		return PTR_ERR(inode);
 	}
 	
-	for (int i=0; name[i]; i++){
-		name[i] = to_upper(name[i]);
-	}	
+	# for (int i=0; name[i]; i++){
+	# 	name[i] = to_upper(name[i]);
+	# }	
 
 	ext2_log("Create file", dentry, NULL);
 
 	ext2_set_file_ops(inode);
 	mark_inode_dirty(inode);
-	
-	struct file_system_type *fs_type;
-	struct super_block *sb;
-    fs_type = get_fs_type("ext2");
-    if (fs_type) {
-		if (hlist_empty(&fs_type->fs_supers)) {
-        	printk(KERN_ALERT "Error: No mounted ext2 filesystems\n");
-			return ext2_add_nondir(dentry, inode);
-		}
-		sb = hlist_entry(fs_type->fs_supers.first, struct super_block, s_instances);
-	    unsigned long free_space = ext2_check_free_space1(sb);
-		printk(KERN_ALERT "Free space: %lu\n", free_space);
-	}
 
 	set_creation_time(inode);
 	
@@ -320,9 +307,9 @@ static int ext2_mkdir(struct mnt_idmap * idmap,
 	err = PTR_ERR(inode);
 	if (IS_ERR(inode))
 		goto out_dir;
-	for (int i = 0; name[i]; i++){
-		name[i] = to_lower(name[i]);
-	}
+	# for (int i = 0; name[i]; i++){
+	# 	name[i] = to_lower(name[i]);
+	# }
 
 	ext2_log("Create directory", dentry, NULL);
 
@@ -361,10 +348,10 @@ static int ext2_unlink(struct inode *dir, struct dentry *dentry)
 	struct folio *folio;
 	int err;
 
-	// Ghi log xóa file nếu không phải thư mục
-    if (!S_ISDIR(inode->i_mode)) {
-        ext2_log("Remove file", dentry, NULL);
-    }
+	// write log
+    	if (!S_ISDIR(inode->i_mode)) {
+        	ext2_log("Remove file", dentry, NULL);
+    	}
 
 	err = dquot_initialize(dir);
 	if (err)
@@ -435,27 +422,27 @@ static int ext2_rename (struct mnt_idmap * idmap,
 	if (IS_ERR(old_de))
 		return PTR_ERR(old_de);
 	
-	char *name = new_dentry->d_name.name;
-	if (old_is_dir) {
-		for (int i=0; name[i]; i++){
-			name[i] = to_lower(name[i]);
-		}
-	}
-	else {
-		for (int i=0; name[i]; i++){
-			name[i] = to_upper(name[i]);
-		}
-	}
+	# char *name = new_dentry->d_name.name;
+	# if (old_is_dir) {
+	#	for (int i=0; name[i]; i++){
+	#		name[i] = to_lower(name[i]);
+	#	}
+	# }
+	# else {
+	#	for (int i=0; name[i]; i++){
+	#		name[i] = to_upper(name[i]);
+	#	}
+	# }
 
-    // Kiểm tra loại thao tác
-    bool is_move = (old_dir != new_dir);
+    	// Check the type of operation
+    	bool is_move = (old_dir != new_dir);
 
-    // Ghi log trước khi thực hiện thao tác
-    if (is_move) {
-        ext2_log("MOVE", new_dentry, old_dentry);
-    } else{
-        ext2_log("RENAME", new_dentry, old_dentry);
-    }
+    	// Log the operation before execution
+    	if (is_move) {
+        	ext2_log("MOVE", new_dentry, old_dentry);
+    	} else{
+        	ext2_log("RENAME", new_dentry, old_dentry);
+    	}
 
 	if (old_is_dir && old_dir != new_dir) {
 		err = -EIO;
